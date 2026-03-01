@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rubiks Kube Spill</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Rubiks Kube Spill</h1>
+      <p class="sub">Trykk på trekk-knappene (U, R, F osv.) for å rotere kuben.</p>
+    </div>
+
+    <div class="status">
+      <div><span class="label">Tid:</span> <span id="time">00:00</span></div>
+      <div><span class="label">Trekk:</span> <span id="moves">0</span></div>
+      <div id="solved" class="badge">Ikke løst</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <h2>Kontroller</h2>
+
+      <div class="grid">
+        <button data-move="U">U</button>
+        <button data-move="U'">U'</button>
+
+        <button data-move="D">D</button>
+        <button data-move="D'">D'</button>
+
+        <button data-move="L">L</button>
+        <button data-move="L'">L'</button>
+
+        <button data-move="R">R</button>
+        <button data-move="R'">R'</button>
+
+        <button data-move="F">F</button>
+        <button data-move="F'">F'</button>
+
+        <button data-move="B">B</button>
+        <button data-move="B'">B'</button>
+      </div>
+
+      <div class="row">
+        <button id="scramble" class="primary">🎲 Scramble</button>
+        <button id="reset">🔄 Reset</button>
+        <button id="check">✅ Sjekk</button>
+      </div>
+
+      <details>
+        <summary>Tips for Jens (6 år)</summary>
+        <ul>
+          <li>Trykk <b>Scramble</b> for å blande.</li>
+          <li>Prøv å gjøre alle sidene til samme farge.</li>
+          <li><b>U</b> betyr “Toppen”, <b>D</b> betyr “Bunnen”.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="canvasWrap">
+      <canvas id="c" width="720" height="520" aria-label="Rubiks kube net"></canvas>
+      <p class="hint">Keyboard: U/D/L/R/F/B og hold <b>Shift</b> for motsatt (f.eks. Shift+U = U')</p>
+    </section>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
