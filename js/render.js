@@ -1,4 +1,4 @@
-// Tegner en utfoldet kube ("net").
+// Tegner en utfoldet kube ("net") som alltid passer i canvas.
 // Layout:
 //      [U]
 // [L] [F] [R] [B]
@@ -14,24 +14,37 @@ const COLOR = {
 };
 
 export function drawCubeNet(ctx, faces) {
-  const w = ctx.canvas.width;
-  const h = ctx.canvas.height;
+  const w = ctx.canvas.width / (window.devicePixelRatio || 1);
+  const h = ctx.canvas.height / (window.devicePixelRatio || 1);
 
   ctx.clearRect(0, 0, w, h);
 
-  // Bakgrunn-ruter
+  // Bakgrunn
   ctx.fillStyle = "rgba(255,255,255,0.04)";
   ctx.fillRect(0, 0, w, h);
 
-  const size = Math.min(w, h) * 0.14;  // størrelse på en liten sticker
-  const gap = size * 0.10;
+  const margin = 24;
+
+  // Vi må få plass til 4 flater bortover og 3 nedover
+  // omtrent 12 stickers i bredden, 9 i høyden (+ mellomrom)
+  const maxStickerW = (w - margin * 2) / 14;
+  const maxStickerH = (h - margin * 2) / 11;
+
+  const size = Math.max(12, Math.floor(Math.min(maxStickerW, maxStickerH)));
+  const gap = Math.max(2, Math.floor(size * 0.12));
+  const faceGap = Math.max(6, Math.floor(size * 0.28));
+
   const faceSize = size * 3 + gap * 2;
 
-  const originX = (w - faceSize * 4 - gap * 3) / 2; // 4 flater på midtraden
-  const originY = (h - faceSize * 3 - gap * 2) / 2; // 3 rader (U + midt + D)
+  const totalW = faceSize * 4 + faceGap * 3;
+  const totalH = faceSize * 3 + faceGap * 2;
+
+  const originX = Math.floor((w - totalW) / 2);
+  const originY = Math.floor((h - totalH) / 2);
 
   function drawFace(faceKey, fx, fy, label) {
     const arr = faces[faceKey];
+
     for (let r = 0; r < 3; r++) {
       for (let c = 0; c < 3; c++) {
         const i = r * 3 + c;
@@ -47,29 +60,28 @@ export function drawCubeNet(ctx, faces) {
       }
     }
 
-    // face label
     ctx.fillStyle = "rgba(255,255,255,0.65)";
     ctx.font = "700 14px system-ui, sans-serif";
     ctx.fillText(label, fx, fy - 10);
   }
 
-  const Ux = originX + (faceSize + gap) * 1;
-  const Uy = originY + (faceSize + gap) * 0;
+  const Ux = originX + (faceSize + faceGap) * 1;
+  const Uy = originY + (faceSize + faceGap) * 0;
 
-  const Lx = originX + (faceSize + gap) * 0;
-  const Ly = originY + (faceSize + gap) * 1;
+  const Lx = originX + (faceSize + faceGap) * 0;
+  const Ly = originY + (faceSize + faceGap) * 1;
 
-  const Fx = originX + (faceSize + gap) * 1;
-  const Fy = originY + (faceSize + gap) * 1;
+  const Fx = originX + (faceSize + faceGap) * 1;
+  const Fy = originY + (faceSize + faceGap) * 1;
 
-  const Rx = originX + (faceSize + gap) * 2;
-  const Ry = originY + (faceSize + gap) * 1;
+  const Rx = originX + (faceSize + faceGap) * 2;
+  const Ry = originY + (faceSize + faceGap) * 1;
 
-  const Bx = originX + (faceSize + gap) * 3;
-  const By = originY + (faceSize + gap) * 1;
+  const Bx = originX + (faceSize + faceGap) * 3;
+  const By = originY + (faceSize + faceGap) * 1;
 
-  const Dx = originX + (faceSize + gap) * 1;
-  const Dy = originY + (faceSize + gap) * 2;
+  const Dx = originX + (faceSize + faceGap) * 1;
+  const Dy = originY + (faceSize + faceGap) * 2;
 
   drawFace("U", Ux, Uy, "U (Top)");
   drawFace("L", Lx, Ly, "L");
@@ -78,7 +90,6 @@ export function drawCubeNet(ctx, faces) {
   drawFace("B", Bx, By, "B (Back)");
   drawFace("D", Dx, Dy, "D (Bottom)");
 
-  // liten forklaring
   ctx.fillStyle = "rgba(255,255,255,0.6)";
   ctx.font = "12px system-ui, sans-serif";
   ctx.fillText("Mål: Få hver flate til én farge.", 16, h - 18);

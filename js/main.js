@@ -4,9 +4,6 @@ import { drawCubeNet } from "./render.js";
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
-ctx.fillStyle = "white";
-ctx.fillRect(10, 10, 100, 60);
-
 const timeEl = document.getElementById("time");
 const movesEl = document.getElementById("moves");
 const solvedEl = document.getElementById("solved");
@@ -20,6 +17,30 @@ const cube = new Cube();
 let moveCount = 0;
 let startTime = null;
 let timerId = null;
+
+/**
+ * Matcher canvas sin interne pixelstørrelse til CSS-størrelsen
+ * så tegningen blir skarp og alltid passer.
+ */
+function resizeCanvasToCssSize() {
+  const rect = canvas.getBoundingClientRect();
+
+  // CSS bestemmer "visuell" størrelse. Her setter vi faktiske piksler.
+  // devicePixelRatio gjør det skarpere på mobil/retina.
+  const dpr = window.devicePixelRatio || 1;
+
+  const cssW = Math.max(320, Math.floor(rect.width));
+  const cssH = Math.max(260, Math.floor(rect.height));
+
+  const pxW = Math.floor(cssW * dpr);
+  const pxH = Math.floor(cssH * dpr);
+
+  if (canvas.width !== pxW) canvas.width = pxW;
+  if (canvas.height !== pxH) canvas.height = pxH;
+
+  // Viktig: skaler koordinatsystemet tilbake til CSS-piksler
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
 
 function startTimerIfNeeded() {
   if (startTime !== null) return;
@@ -41,6 +62,7 @@ function setSolvedUI(isSolved) {
 }
 
 function render() {
+  resizeCanvasToCssSize();
   drawCubeNet(ctx, cube.faces);
 }
 
@@ -49,9 +71,11 @@ function doMove(m) {
   cube.move(m);
   moveCount++;
   movesEl.textContent = String(moveCount);
+
   const solved = cube.isSolved();
   setSolvedUI(solved);
   if (solved) stopTimer();
+
   render();
 }
 
@@ -60,6 +84,7 @@ document.querySelectorAll("button[data-move]").forEach(btn => {
   btn.addEventListener("click", () => doMove(btn.dataset.move));
 });
 
+// Scramble
 btnScramble.addEventListener("click", () => {
   cube.scramble(20);
   moveCount = 0;
@@ -71,6 +96,7 @@ btnScramble.addEventListener("click", () => {
   render();
 });
 
+// Reset
 btnReset.addEventListener("click", () => {
   cube.reset();
   moveCount = 0;
@@ -82,9 +108,9 @@ btnReset.addEventListener("click", () => {
   render();
 });
 
+// Sjekk
 btnCheck.addEventListener("click", () => {
-  const solved = cube.isSolved();
-  setSolvedUI(solved);
+  setSolvedUI(cube.isSolved());
 });
 
 // Tastatur: U/D/L/R/F/B, SHIFT = prime (U')
@@ -96,6 +122,9 @@ window.addEventListener("keydown", (e) => {
   const move = e.shiftKey ? `${k}'` : k;
   doMove(move);
 });
+
+// Re-render ved resize (mobil/PC)
+window.addEventListener("resize", () => render());
 
 // init
 setSolvedUI(true);
