@@ -1,8 +1,5 @@
 import { Cube } from "./cube.js";
-import { drawCubeNet } from "./render.js";
-
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
+import { Renderer3D } from "./renderer3d.js";
 
 const timeEl = document.getElementById("time");
 const movesEl = document.getElementById("moves");
@@ -12,35 +9,14 @@ const btnScramble = document.getElementById("scramble");
 const btnReset = document.getElementById("reset");
 const btnCheck = document.getElementById("check");
 
+const viewEl = document.getElementById("view");
+
 const cube = new Cube();
+const r3d = new Renderer3D(viewEl);
 
 let moveCount = 0;
 let startTime = null;
 let timerId = null;
-
-/**
- * Matcher canvas sin interne pixelstørrelse til CSS-størrelsen
- * så tegningen blir skarp og alltid passer.
- */
-function resizeCanvasToCssSize() {
-  const rect = canvas.getBoundingClientRect();
-
-  // CSS bestemmer "visuell" størrelse. Her setter vi faktiske piksler.
-  // devicePixelRatio gjør det skarpere på mobil/retina.
-  const dpr = window.devicePixelRatio || 1;
-
-  const cssW = Math.max(320, Math.floor(rect.width));
-  const cssH = Math.max(260, Math.floor(rect.height));
-
-  const pxW = Math.floor(cssW * dpr);
-  const pxH = Math.floor(cssH * dpr);
-
-  if (canvas.width !== pxW) canvas.width = pxW;
-  if (canvas.height !== pxH) canvas.height = pxH;
-
-  // Viktig: skaler koordinatsystemet tilbake til CSS-piksler
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
 
 function startTimerIfNeeded() {
   if (startTime !== null) return;
@@ -62,8 +38,7 @@ function setSolvedUI(isSolved) {
 }
 
 function render() {
-  resizeCanvasToCssSize();
-  drawCubeNet(ctx, cube.faces);
+  r3d.updateFaces(cube.faces);
 }
 
 function doMove(m) {
@@ -122,9 +97,6 @@ window.addEventListener("keydown", (e) => {
   const move = e.shiftKey ? `${k}'` : k;
   doMove(move);
 });
-
-// Re-render ved resize (mobil/PC)
-window.addEventListener("resize", () => render());
 
 // init
 setSolvedUI(true);
