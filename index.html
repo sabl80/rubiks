@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rubiks Kube Spill</title>
+  <title>Rubiks Kube 3D</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="top">
     <div>
-      <h1>Rubiks Kube Spill</h1>
-      <p class="sub">Trykk på trekk-knappene (U, R, F osv.) for å rotere kuben.</p>
+      <h1>Rubiks Kube Spill (3D)</h1>
+      <p class="sub">Dra med musen for å rotere. Bruk knappene for trekk.</p>
     </div>
 
     <div class="status">
@@ -50,19 +50,11 @@
         <button id="check">✅ Sjekk</button>
       </div>
 
-      <details>
-        <summary>Tips for Jens (6 år)</summary>
-        <ul>
-          <li>Trykk <b>Scramble</b> for å blande.</li>
-          <li>Prøv å gjøre alle sidene til samme farge.</li>
-          <li><b>U</b> betyr “Toppen”, <b>D</b> betyr “Bunnen”.</li>
-        </ul>
-      </details>
+      <p class="hintSmall">Tips: Tastatur U/D/L/R/F/B. Hold <b>Shift</b> for motsatt (U').</p>
     </section>
 
-    <section class="canvasWrap">
-      <canvas id="c" width="720" height="520" aria-label="Rubiks kube net"></canvas>
-      <p class="hint">Keyboard: U/D/L/R/F/B og hold <b>Shift</b> for motsatt (f.eks. Shift+U = U')</p>
+    <section class="view3d">
+      <div id="view"></div>
     </section>
   </main>
 
